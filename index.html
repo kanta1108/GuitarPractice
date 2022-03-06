@@ -1,0 +1,212 @@
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /*CSSの記述*/
+        body {
+            margin: 0;
+        }
+
+        .again {
+            display: none;
+            margin: 0;
+            font-size: 8rem;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        #metronome {
+            margin: 0;
+            height: 100px;
+            background-color: #d3d3d3;
+        }
+
+        #main-content {
+            background-color: #888;
+            height: 500px;
+        }
+
+        #start {
+            background-color: #d3d3d3;
+            height: 110px;
+            display: flex;
+        }
+
+        .start {
+            display: flex;
+        }
+
+        #start>div {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            justify-content: center;
+            font-size: 2rem;
+            align-items: center;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .sphere-container {
+            width: 100%;
+            height: 100px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .sphere {
+            background-color: #ffff00;
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+
+        }
+
+        .note-wrap {
+            font-size: 11rem;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+            height: 350px;
+            margin: 0;
+
+        }
+
+        .play {
+            margin: 0;
+            font-size: 8rem;
+            color: #fff;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+    <title>音階練習アプリ</title>
+</head>
+
+<body>
+    <div id="metronome">
+
+    </div>
+    <div id="main-content">
+        <div class="note-wrap">
+            <div class="note"></div>
+            <p class="again">もう1回?</p>
+        </div>
+
+
+        <div class="sphere-container">
+            <span class="sphere sphere1"></span>
+            <span class="sphere sphere2"></span>
+            <span class="sphere sphere3"></span>
+            <span class="sphere sphere4"></span>
+        </div>
+
+    </div>
+    <div id="start">
+        <div class="start">スタート</div>
+    </div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+
+        //ランダムに音階を表示するメソッド
+        const showNote = (tempo, count) => {
+            //音階を配列に格納
+            const note = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'A♭', 'B♭', 'D♭', 'E♭', 'G♭'];
+
+            //メトロノームに合わせてインターバル
+            const id = setInterval((function first(tempo, count) {
+
+                //配列の中身がなくなったらインターバル終了
+                if (note.length <= 0) {
+                    clearInterval(id);
+                    $('.note').css('display', 'none');
+                    $('.again').css('display', 'block');
+                    $('.start').css('display', 'flex');
+
+                    count = 1;
+                    console.log(count + "配列の中身なくなる");
+                    return count;
+                    console.log(count + "リターンされる");
+                }
+                //ランダム数を生成し、画面に表示
+                let rnd = 0;
+                rnd = Math.floor(Math.random() * note.length);
+                $('.note').text(note[rnd]);
+
+                //1度表示したノートを配列から削除
+                note.splice(rnd, 1);
+
+                //配列中身確認用、リリースの際に削除
+                console.log(note);
+
+                //最初の1回はセットインターバルを無視
+                return first;
+
+            }()), 60 / tempo * 1000 * 4);
+        }
+
+        //メトロノームのメソッド
+        const metronome = (tempo, beat, count) => {
+
+            //if文
+
+            //音楽ファイルを読み込み
+            const music = new Audio('btn03.mp3');
+            const sphere = $(['.sphere1', '.sphere2', '.sphere3', '.sphere4']);
+            let num = 0;
+
+            //音階の表示に合わせてインターバル
+            const id = setInterval((function first() {
+
+                console.log(count + 'インターバルの中');
+
+                if (count > 0) {
+                    console.log(count + 'ifの中');
+                    clearInterval(id);
+                }
+
+                music.play();
+
+                //tempoに合わせてsphereを点滅、num=4を超えたらリセットし、点滅をループ
+                $(sphere[num]).fadeOut(0, function () { $(this).fadeIn(60 / tempo * 1000) });
+                num++;
+                if (num >= sphere.length) num = 0;
+
+                return first;
+
+            }()), 60 / tempo * 1000);
+        }
+
+        //スタートを押したときの処理
+        $('.start').on('click', () => {
+            gameStart();
+        })
+
+        //ゲームスタートの処理
+        const gameStart = () => {
+            $('.note').css('display', 'block');
+            $('.start').css('display', 'none');
+            $('.again').css('display', 'none');
+            let count = 0;
+            const tempo = 120;
+            showNote(tempo, count);
+
+            setTimeout(() => {
+                metronome(tempo, 4, count);
+            }, 500);
+        }
+
+    </script>
+
+
+</body>
+
+</html>
