@@ -120,6 +120,10 @@
             font-weight: bold;
             text-align: center;
         }
+
+        .countDown {
+            display: none;
+        }
     </style>
     <title>音階練習アプリ</title>
 </head>
@@ -136,13 +140,13 @@
         <div class="note-wrap">
             <div class="description">
                 あそびかた:<br />
-                まずはBPMを設定しよう<br />
-                AからGまで12の音階がランダムに表示されます<br />
-                メトロノームに合わせて6弦から順に、その音を鳴らしてみましょう。<br />
-                1つの弦に対して4拍、計24拍したら表示される音階が変わります。<br /><br />
+                BPMを設定しましょう<br />
+                ドレミファソラシの12の音階がランダムに表示されます<br />
+                メトロノームに合わせて6弦から順に、その音を鳴らしてみましょう<br />
+                1つの弦に対して4拍、6弦分計24拍したら次の音階が表示されます<br /><br />
                 これで指板上のすべての音を覚えよう！
             </div>
-            <div class="countDown"></div>
+            <div class="countDown">3</div>
             <div class="note"></div>
             <p class="again">もう1回?</p>
         </div>
@@ -168,15 +172,16 @@
 
         let count = 1;
 
+        let tempo = 140;
+        //let tempo;
+
         //ランダムに音階を表示するメソッド
-        const showNote = (tempo) => {
+        const showNote = () => {
             //音階を配列に格納
             const note = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'A♭', 'B♭', 'D♭', 'E♭', 'G♭'];
 
             //メトロノームに合わせてインターバル
-            let id = setInterval((function first(tempo) {
-
-                //console.log(count + 'インターバル');
+            let id = setInterval((function first() {
 
                 //配列の中身がなくなったらインターバル終了
                 if (note.length <= 0) {
@@ -186,8 +191,6 @@
                     $('.start').css('display', 'flex');
 
                     count = note.length;
-
-                    //console.log(count + '配列なくなる');
                 }
                 //ランダム数を生成し、画面に表示
                 let rnd = 0;
@@ -207,9 +210,8 @@
         }
 
         //メトロノームのメソッド
-        const metronome = (tempo, beat) => {
+        const metronome = () => {
 
-            tempo;
             console.log(tempo);
             //音楽ファイルを読み込み
             const music = new Audio('btn03.mp3');
@@ -219,10 +221,7 @@
             //音階の表示に合わせてインターバル
             let id2 = setInterval((function first() {
 
-                //console.log(count + 'メトロノーム');
-
                 if (count === 0) {
-                    //console.log(count + 'メトロノームおわり');
                     clearInterval(id2);
                     count = 1;
                 }
@@ -242,58 +241,60 @@
         //カウントダウンのメソッド
         const countDown = resolve => {
             let p = 3;
-            let countInterval = setInterval(()=> {
-                $('.countDown').text(p--);
 
-                if (p < 1) {
+            let countInterval = setInterval(() => {
+                $('.countDown').css('display', 'block');
+                $('.countDown').text(p--);
+                if (p < 0) {
                     clearInterval(countInterval);
-                    //console.log('カウントダウンおわり');
                     resolve();
+                    $('.note').css('display', 'block');
                 }
             }, 1000)
         }
 
         //スタートを押したときの処理
         $('.start').on('click', () => {
+            $('.description').css('display', 'none');
+            $('.start').css('display', 'none');
+            $('.again').css('display', 'none');
             gameStart();
         })
 
         //メトロノームに合わせて音階を表示する処理
-        const noteByMetro = tempo => {
-            console.log('noteByMetro'+tempo);
-            showNote(tempo);
+        const noteByMetro = () => {
+            $('.countDown').css('display', 'none');
+
+            showNote();
 
             setTimeout(() => {
-                metronome(tempo, 4);
+                metronome();
             }, 500);
         }
 
         //ゲームスタートの処理
         const gameStart = () => {
 
-            let tempo = 120;
-            /*
-            let tempo = $('[class ="bpm"]').val();
+            //tempo = $('[class ="bpm"]').val();
+
             if (!tempo || '') {
                 alert('BPMを入力してください');
                 $('.bpm').css('border', '2px red solid');
-            } else {*/
+            } else if (tempo > 160 || tempo < 60) {
+                alert('BPMは60~160の間で設定してください')
+            } else {
+                /*
+                $('.description').css('display', 'none');
+                $('.note').css('display', 'block');
+                $('.start').css('display', 'none');
+                $('.again').css('display', 'none');
+                */
 
-            $('.description').css('display', 'none');
-            $('.note').css('display', 'block');
-            $('.start').css('display', 'none');
-            $('.again').css('display', 'none');
+                console.log('gameStart' + tempo);
+                new Promise(countDown).then(noteByMetro);
 
-            console.log('gameStart'+tempo);
-            new Promise(countDown).then(noteByMetro);
-            
+            }
         }
-        //}
-
-        
-
-        
-
     </script>
 
 
