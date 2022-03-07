@@ -116,13 +116,19 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
 
+        let id = "";
+
+        let count = 1;
+
         //ランダムに音階を表示するメソッド
-        const showNote = (tempo, count) => {
+        const showNote = (tempo) => {
             //音階を配列に格納
             const note = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'A♭', 'B♭', 'D♭', 'E♭', 'G♭'];
 
             //メトロノームに合わせてインターバル
-            const id = setInterval((function first(tempo, count) {
+            let id = setInterval((function first(tempo) {
+
+                console.log(count + 'インターバル');
 
                 //配列の中身がなくなったらインターバル終了
                 if (note.length <= 0) {
@@ -131,10 +137,9 @@
                     $('.again').css('display', 'block');
                     $('.start').css('display', 'flex');
 
-                    count = 1;
-                    console.log(count + "配列の中身なくなる");
-                    return count;
-                    console.log(count + "リターンされる");
+                    count = note.length;
+
+                    console.log(count + '配列なくなる');
                 }
                 //ランダム数を生成し、画面に表示
                 let rnd = 0;
@@ -154,7 +159,7 @@
         }
 
         //メトロノームのメソッド
-        const metronome = (tempo, beat, count) => {
+        const metronome = (tempo, beat) => {
 
             //if文
 
@@ -164,13 +169,14 @@
             let num = 0;
 
             //音階の表示に合わせてインターバル
-            const id = setInterval((function first() {
+            let id2 = setInterval((function first() {
 
-                console.log(count + 'インターバルの中');
+                console.log(count + 'メトロノーム');
 
-                if (count > 0) {
-                    console.log(count + 'ifの中');
-                    clearInterval(id);
+                if (count === 0) {
+                    console.log(count + 'メトロノームおわり');
+                    clearInterval(id2);
+                    count = 1;
                 }
 
                 music.play();
@@ -195,12 +201,11 @@
             $('.note').css('display', 'block');
             $('.start').css('display', 'none');
             $('.again').css('display', 'none');
-            let count = 0;
             const tempo = 120;
-            showNote(tempo, count);
+            showNote(tempo);
 
             setTimeout(() => {
-                metronome(tempo, 4, count);
+                metronome(tempo, 4);
             }, 500);
         }
 
