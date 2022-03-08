@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ギター練習用アプリ(仮)</title>
     <style>
         /*CSSの記述*/
         body {
@@ -34,16 +35,18 @@
             align-items: center;
         }
 
-        .metronome > form {
+        .metronome>form {
             margin: 0;
             font-size: 2rem;
             font-weight: bold;
             color: #fff;
         }
-        .metronome > h1{
+
+        .metronome>h1 {
             margin: 0;
             color: #fff;
         }
+
         .bpm {
             height: 40px;
             width: 100px;
@@ -53,7 +56,7 @@
             font-weight: bold;
             background-color: inherit;
             border: none;
-            border-bottom: 4px black solid;
+            border-bottom: 4px #fff solid;
             outline: none;
             text-align: center;
         }
@@ -61,30 +64,32 @@
         #main-content {
             background-color: #888;
             height: 500px;
+            line-height: 1.3;
         }
 
         #start {
             background-color: #d3d3d3;
             height: 110px;
             display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .start {
             display: flex;
-        }
-
-        #start>div {
-            display: flex;
-            height: 100%;
-            width: 100%;
+            height: 50%;
+            width: 15%;
+            border: #fff 4px solid;
             justify-content: center;
             font-size: 2rem;
             align-items: center;
             font-weight: bold;
             color: #fff;
+            cursor: pointer;
         }
 
         .sphere-container {
+            padding-top: 20px;
             width: 100%;
             height: 100px;
             display: flex;
@@ -126,8 +131,18 @@
         .countDown {
             display: none;
         }
+
+        .stringNum {
+            margin: 0 auto;
+            height: 50px;
+            width: 200px;
+            color: #fff;
+            font-size: 4rem;
+            text-align: center;
+            display: none;
+        }
     </style>
-    <title>音階練習アプリ</title>
+
 </head>
 
 <body>
@@ -142,7 +157,7 @@
     <div id="main-content">
         <div class="note-wrap">
             <div class="description">
-                あそびかた:<br />
+                あそびかた:<br /><br/>
                 60~160の間でBPMを設定しましょう<br />
                 ドレミファソラシの12の音階がランダムに表示されます<br />
                 メトロノームに合わせて6弦から順に、その音を鳴らしてみましょう<br />
@@ -151,6 +166,7 @@
             </div>
             <div class="countDown">3</div>
             <div class="note"></div>
+            <div class="stringNum"></div>
             <p class="again">もう1回?</p>
         </div>
 
@@ -175,8 +191,11 @@
         let count = 1;
 
         //メトロノームのBPM用変数
-        //let tempo = 140;
+        //let tempo = 120;
         let tempo;
+
+        //表示する弦数
+        let stringNum = 6;
 
         //ランダムに音階を表示するメソッド
         const showNote = () => {
@@ -190,6 +209,7 @@
                 if (note.length <= 0) {
                     clearInterval(id);
                     $('.note').css('display', 'none');
+                    $('.stringNum').css('display', 'none');
                     $('.again').css('display', 'block');
                     $('.start').css('display', 'flex');
 
@@ -205,11 +225,24 @@
                 note.splice(rnd, 1);
 
                 //配列中身確認用、リリースの際に削除
-                console.log(note);
+                //console.log(note);
 
                 //最初の1回はセットインターバルを無視
                 return first;
 
+            }()), 60 / tempo * 1000 * 4 * 6);
+
+            //弦数を表示するインターバル
+            let stringInterval = setInterval((function first() {
+                $('.stringNum').text(stringNum-- + '弦');
+
+                if (stringNum < 1) stringNum = 6;
+                if (count === 0) {
+                    clearInterval(stringInterval);
+                    stringNum = 6;
+                }
+
+                return first;
             }()), 60 / tempo * 1000 * 4);
         }
 
@@ -241,6 +274,8 @@
             }()), 60 / tempo * 1000);
         }
 
+
+
         //カウントダウンのメソッド
         const countDown = resolve => {
             let p = 3;
@@ -252,6 +287,7 @@
                     clearInterval(countInterval);
                     resolve();
                     $('.note').css('display', 'block');
+                    $('.stringNum').css('display', 'block');
                 }
             }, 1000)
         }
@@ -259,7 +295,7 @@
         //スタートを押したときの処理
         $('.start').on('click', () => {
             //BPM未入力or範囲外の際はアラート
-            console.log(tempo);
+            
             tempo = $('[class ="bpm"]').val();
             if (!tempo) {
                 alert('BPMを入力してください');
@@ -271,13 +307,13 @@
                alert('BPMは半角で入力してください');
                $('.bpm').css('border', '2px red solid');
             } else {
-                //BPMが正常に入力をされた時
-                $('.description').css('display', 'none');
-                $('.start').css('display', 'none');
-                $('.again').css('display', 'none');
-                $('.bpm').css('border', 'none');
-                $('.bpm').css('borderBottom', '4px black solid');
-                gameStart();
+            //BPMが正常に入力をされた時
+            $('.description').css('display', 'none');
+            $('.start').css('display', 'none');
+            $('.again').css('display', 'none');
+            $('.bpm').css('border', 'none');
+            $('.bpm').css('borderBottom', '4px black solid');
+            gameStart();
 
             }
         })
@@ -291,7 +327,7 @@
         //メトロノームに合わせて音階を表示する処理
         const noteByMetro = () => {
             $('.countDown').css('display', 'none');
-            $('.note').css('display', 'block');
+            $('.stringNum').css('display', 'block');
 
             showNote();
 
