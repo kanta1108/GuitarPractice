@@ -34,7 +34,7 @@
             left: -5px;
             right: -5px;
             background-color: rgba(0, 0, 0, 0.5);
-            filter: blur(10px);
+            /*filter: blur(10px);　ぼかしは不採用*/
             z-index: -1;
         }
 
@@ -51,7 +51,6 @@
         #head {
             margin: 0;
             height: 100px;
-            /*background-color: #d3d3d3;*/
         }
 
         .metronome {
@@ -89,13 +88,11 @@
         }
 
         #main-content {
-            /* background-color: #888;*/
             height: 500px;
             line-height: 1.3;
         }
 
         #start {
-            /* background-color: #d3d3d3;*/
             height: 113px;
             display: flex;
             justify-content: center;
@@ -116,7 +113,7 @@
         }
 
         .sphere-container {
-            padding-top: 20px;
+            padding-top: 40px;
             width: 100%;
             height: 100px;
             display: flex;
@@ -257,7 +254,7 @@
                 //1度表示したノートを配列から削除
                 note.splice(rnd, 1);
 
-                //配列中身確認用、リリースの際に削除
+                //配列中身確認用、リリースの際にコメントアウト
                 //console.log(note);
 
                 //最初の1回はセットインターバルを無視
@@ -326,7 +323,6 @@
         //スタートを押したときの処理
         $('.start').on('click', () => {
             //BPM未入力or範囲外の際はアラート
-
             tempo = $('[class ="bpm"]').val();
             if (!tempo) {
                 alert('BPMを入力してください');
