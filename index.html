@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ギター練習用アプリ(仮)</title>
+    <title>指板上の音を覚えるアプリ(仮)</title>
     <style>
         /*CSSの記述*/
         body {
@@ -148,7 +148,7 @@
 <body>
     <div id="head">
         <div class="metronome">
-            <h1>ギター練習用アプリ(仮)</h1>
+            <h1>指板上の音を覚えるアプリ(仮)</h1>
             <form autocomplete="off">
                 BPM:<input type="text" name="bpm" class="bpm">
             </form>
@@ -157,7 +157,7 @@
     <div id="main-content">
         <div class="note-wrap">
             <div class="description">
-                あそびかた:<br /><br/>
+                あそびかた:<br /><br />
                 60~160の間でBPMを設定しましょう<br />
                 ドレミファソラシの12の音階がランダムに表示されます<br />
                 メトロノームに合わせて6弦から順に、その音を鳴らしてみましょう<br />
@@ -166,6 +166,7 @@
             </div>
             <div class="countDown">3</div>
             <div class="note"></div>
+            
             <div class="stringNum"></div>
             <p class="again">もう1回?</p>
         </div>
@@ -187,11 +188,13 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
 
+        //音楽ファイルを読み込み
+        const music = new Audio('btn03.mp3');
+
         //ノート表示とメトロノーム終了を同期させる変数
         let count = 1;
 
         //メトロノームのBPM用変数
-        //let tempo = 120;
         let tempo;
 
         //表示する弦数
@@ -249,8 +252,6 @@
         //メトロノームのメソッド
         const metronome = () => {
 
-            //音楽ファイルを読み込み
-            const music = new Audio('btn03.mp3');
             const sphere = $(['.sphere1', '.sphere2', '.sphere3', '.sphere4']);
             let num = 0;
 
@@ -295,25 +296,25 @@
         //スタートを押したときの処理
         $('.start').on('click', () => {
             //BPM未入力or範囲外の際はアラート
-            
+
             tempo = $('[class ="bpm"]').val();
             if (!tempo) {
                 alert('BPMを入力してください');
                 $('.bpm').css('border', '3px red solid');
             } else if (tempo > 160 || tempo < 60) {
                 alert('BPMは60~160の間で設定してください')
-                $('.bpm').css('border', '2px red solid');
-            } else if (tempo.match(/[^A-Za-z0-9s.-]+/)){
-               alert('BPMは半角で入力してください');
-               $('.bpm').css('border', '2px red solid');
+                $('.bpm').css('border', '3px red solid');
+            } else if (tempo.match(/[^A-Za-z0-9s.-]+/)) {
+                alert('BPMは半角で入力してください');
+                $('.bpm').css('border', '3px red solid');
             } else {
-            //BPMが正常に入力をされた時
-            $('.description').css('display', 'none');
-            $('.start').css('display', 'none');
-            $('.again').css('display', 'none');
-            $('.bpm').css('border', 'none');
-            $('.bpm').css('borderBottom', '4px black solid');
-            gameStart();
+                //BPMが正常に入力をされた時
+                $('.description').css('display', 'none');
+                $('.start').css('display', 'none');
+                $('.again').css('display', 'none');
+                $('.bpm').css('border', 'none');
+                $('.bpm').css('borderBottom', '4px #fff solid');
+                gameStart();
 
             }
         })
@@ -331,10 +332,10 @@
 
             showNote();
 
-            //メトロノームより0.5秒早くノートを表示
+            //メトロノームより0.7秒早くノートを表示
             setTimeout(() => {
                 metronome();
-            }, 500);
+            }, 700);
         }
 
 
