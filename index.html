@@ -113,6 +113,18 @@
             color: #fff;
             cursor: pointer;
         }
+        .end{
+            display: none;
+            height: 50%;
+            width: 15%;
+            border: #fff 4px solid;
+            justify-content: center;
+            font-size: 2rem;
+            align-items: center;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            }
 
         .sphere-container {
             padding-top: 40px;
@@ -207,11 +219,11 @@
                 padding: 0 15px;
             }
 
-            .description > ul {
+            .description>ul {
                 text-align: justify;
             }
 
-            .description > ul > li {
+            .description>ul>li {
                 margin: 15px 0;
             }
 
@@ -222,26 +234,36 @@
             #main-content {
                 height: 350px;
             }
-            .stringNum{
+
+            .stringNum {
                 margin: -30px auto 0;
             }
-            .again{
+
+            .again {
                 font-size: 5rem;
             }
+
             .sphere-container {
                 padding: 0;
                 height: 20%;
             }
+
             .sphere {
                 height: 50px;
                 width: 50px;
             }
-            #start{
-                margin:0;
+
+            #start {
+                margin: 0;
             }
-            .start{
+
+            .start {
                 width: 40%;
             }
+            .end{
+                width: 40%;
+            }
+            
         }
     </style>
 
@@ -252,7 +274,7 @@
         <div id="head">
             <div class="metronome">
                 <h1>指板上の音を覚えるアプリ(仮)</h1>
-                <form autocomplete="off">
+                <form autocomplete="off" onsubmit="return false;">
                     BPM:<input type="text" name="bpm" class="bpm">
                 </form>
             </div>
@@ -285,6 +307,7 @@
         <!--/#main-content-->
         <div id="start">
             <div class="start">スタート</div>
+            <div class="end">終了</div>
         </div>
     </div>
 
@@ -307,22 +330,24 @@
         //ランダムに音階を表示するメソッド
         const showNote = () => {
             //音階を配列に格納
-            const note = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'A♭', 'B♭', 'D♭', 'E♭', 'G♭'];
+            const note = ['A'/*, 'B', 'C', 'D', 'E', 'F', 'G', 'A♭', 'B♭', 'D♭', 'E♭', 'G♭'*/];
 
             //メトロノームに合わせてインターバル
             let id = setInterval((function first() {
 
-                //配列の中身がなくなったらインターバル終了
+                //配列の中身がなくなったらインターバル終了、同時にゲーム終了
                 if (note.length <= 0) {
                     clearInterval(id);
                     $('.note').css('display', 'none');
                     $('.stringNum').css('display', 'none');
                     $('.again').css('display', 'block');
+                    $('#start').css('justifyContent', 'space-around')
                     $('.start').css('display', 'flex');
 
                     //グローバル変数のcountを0にしてメトロノームを終了させる
                     count = note.length;
                 }
+
                 //ランダム数を生成し、画面に表示
                 let rnd = 0;
                 rnd = Math.floor(Math.random() * note.length);
@@ -417,10 +442,10 @@
                 $('.again').css('display', 'none');
                 $('.bpm').css('border', 'none');
                 $('.bpm').css('borderBottom', '4px #fff solid');
+                $('.end').css('display', 'none');
                 gameStart();
-
             }
-        })
+        });
 
         //ゲームスタートの処理
         const gameStart = () => {
@@ -432,6 +457,7 @@
         const noteByMetro = () => {
             $('.countDown').css('display', 'none');
             $('.stringNum').css('display', 'block');
+            $('.end').css('display', 'flex');
 
             showNote();
 
@@ -440,6 +466,10 @@
                 metronome();
             }, 1000);
         }
+
+        $('.end').on('click', ()=>{
+            window.location.reload();
+        })
 
 
     </script>
